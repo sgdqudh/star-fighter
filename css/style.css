@@ -1,0 +1,244 @@
+/* ==========================================================================
+ * 星空战机 —— 页面样式
+ * 画布固定竖版 9:16，窗口居中显示；覆盖层超出画布的部分自动裁剪。
+ * ========================================================================== */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #04050c;
+  overflow: hidden;
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* 9:16 舞台：短边撑满、长边自适应，始终水平+垂直居中 */
+#stage {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(100vw, calc(100vh * 9 / 16));
+  height: min(100vh, calc(100vw * 16 / 9));
+  overflow: hidden;
+  background: #05060f;
+  box-shadow: 0 0 60px rgba(70, 130, 255, 0.18);
+}
+
+#game {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* ---------------- 覆盖层（主菜单 / 暂停 / 结算） ---------------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: none;                 /* 由状态机的 data-state 控制显隐 */
+  align-items: center;
+  justify-content: center;
+  padding: 5%;
+  text-align: center;
+}
+
+#stage[data-state="menu"]      .overlay[data-screen="menu"],
+#stage[data-state="levelup"]   .overlay[data-screen="levelup"],
+#stage[data-state="paused"]    .overlay[data-screen="paused"],
+#stage[data-state="gameover"]  .overlay[data-screen="gameover"] {
+  display: flex;
+}
+
+/* 主菜单：静态星空背景，元素垂直居中排列 */
+.overlay[data-screen="menu"] { background: rgba(5, 6, 15, 0.28); }
+
+/* 暂停界面：半透明黑色遮罩覆盖游戏画面 */
+.overlay[data-screen="paused"] { background: rgba(0, 0, 0, 0.58); }
+
+/* 结算界面：全屏半透明深色背景覆盖原游戏画面 */
+.overlay[data-screen="gameover"] { background: rgba(4, 7, 20, 0.78); }
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 82%;
+}
+
+/* 尺寸单位跟随画布高度缩放，保证在任意窗口下比例一致 */
+.title {
+  margin: 0 0 2.2vh;
+  font-size: clamp(30px, 7.2vh, 74px);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #9be7ff;
+  text-shadow: 0 0 12px rgba(96, 200, 255, 0.85), 0 0 34px rgba(80, 150, 255, 0.55);
+}
+
+.subtitle {
+  margin: 0 0 5.4vh;
+  font-size: clamp(12px, 1.95vh, 20px);
+  color: rgba(230, 242, 255, 0.72);
+  letter-spacing: 0.06em;
+}
+
+.modal-title,
+.result-title {
+  margin: 0 0 4vh;
+  font-size: clamp(24px, 4.6vh, 46px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #eaf6ff;
+  text-shadow: 0 0 16px rgba(120, 190, 255, 0.7);
+}
+
+.result-title.win { color: #ffe08a; text-shadow: 0 0 18px rgba(255, 196, 70, 0.85); }
+.result-title.lose { color: #ff8fb0; text-shadow: 0 0 18px rgba(255, 90, 140, 0.7); }
+
+.result-score {
+  margin: 0 0 4.4vh;
+  font-size: clamp(15px, 2.7vh, 28px);
+  color: #ffffff;
+  letter-spacing: 0.08em;
+}
+
+/* 升级选择界面：半透明蓝色遮罩 + 三张强化卡片 */
+.overlay[data-screen="levelup"] { background: rgba(4, 10, 26, 0.72); }
+
+.levelup-panel { max-width: 92%; }
+
+.levelup-title {
+  margin-bottom: 1.4vh;
+  color: #ffe08a;
+  text-shadow: 0 0 18px rgba(255, 200, 80, 0.85);
+}
+
+.levelup-sub {
+  margin: 0 0 2.6vh;
+  font-size: clamp(12px, 1.9vh, 19px);
+  letter-spacing: 0.08em;
+  color: rgba(210, 235, 255, 0.86);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1.6vh;
+  width: 100%;
+  padding: 1.5vh 2.2vh;
+  font-family: inherit;
+  text-align: left;
+  color: #eaf8ff;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(28, 74, 140, 0.92), rgba(14, 34, 74, 0.94));
+  border: 2px solid rgba(120, 200, 255, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 0 14px rgba(50, 120, 220, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  touch-action: manipulation;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: rgba(180, 235, 255, 0.95);
+  box-shadow: 0 0 22px rgba(110, 200, 255, 0.7);
+  outline: none;
+}
+
+.card:active { transform: scale(0.97); }
+
+.card-badge {
+  flex: 0 0 auto;
+  width: 2.9em;
+  height: 2.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(15px, 2.5vh, 25px);
+  font-weight: 800;
+  color: #04203a;
+  background: radial-gradient(circle at 40% 35%, #d8f3ff, #6fc8ff);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(120, 210, 255, 0.8);
+}
+
+.card-body { display: flex; flex-direction: column; gap: 0.5vh; }
+
+.card-name {
+  font-size: clamp(14px, 2.3vh, 22px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.card-desc {
+  font-size: clamp(11px, 1.7vh, 17px);
+  color: rgba(205, 232, 255, 0.88);
+}
+
+.card-stack {
+  align-self: flex-start;
+  font-size: clamp(10px, 1.5vh, 15px);
+  color: #9be7ff;
+  border: 1px solid rgba(150, 220, 255, 0.5);
+  border-radius: 999px;
+  padding: 0.15em 0.7em;
+}
+
+.card-key {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: clamp(11px, 1.7vh, 17px);
+  color: rgba(160, 210, 245, 0.8);
+}
+
+.levelup-tip {
+  margin: 2.4vh 0 0;
+  font-size: clamp(10px, 1.6vh, 16px);
+  color: rgba(180, 215, 245, 0.7);
+}
+
+.btn {
+  min-width: 52%;
+  margin: 1.1vh 0;
+  padding: 1.7vh 4vh;
+  font-family: inherit;
+  font-size: clamp(14px, 2.4vh, 24px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #eaf8ff;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(38, 108, 190, 0.95), rgba(20, 52, 110, 0.95));
+  border: 2px solid rgba(140, 220, 255, 0.85);
+  border-radius: 999px;
+  box-shadow: 0 0 18px rgba(70, 160, 255, 0.5), inset 0 0 14px rgba(120, 210, 255, 0.22);
+  transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease;
+  touch-action: manipulation;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: linear-gradient(180deg, rgba(56, 142, 232, 0.98), rgba(28, 74, 148, 0.98));
+  box-shadow: 0 0 26px rgba(110, 200, 255, 0.75), inset 0 0 18px rgba(150, 225, 255, 0.3);
+  outline: none;
+}
+
+.btn:active { transform: scale(0.96); }

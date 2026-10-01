@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>星空战机</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05060f">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="stage">
+    <!-- 固定竖版 9:16 画布，居中显示 -->
+    <canvas id="game" width="540" height="960"></canvas>
+
+    <!-- 覆盖层：主菜单 / 暂停 / 结算，全部通过状态机切换显示 -->
+    <div id="screen-menu" class="overlay" data-screen="menu">
+      <div class="panel">
+        <h1 class="title">星空战机</h1>
+        <p class="subtitle">方向键/WASD移动，自动射击</p>
+        <button class="btn" data-action="start">开始游戏</button>
+      </div>
+    </div>
+
+    <div id="screen-levelup" class="overlay" data-screen="levelup">
+      <div class="panel levelup-panel">
+        <h2 class="modal-title levelup-title">战机升级</h2>
+        <p class="levelup-sub" id="levelup-sub">等级 1 → 2　选择一项强化</p>
+        <div class="cards" id="levelup-cards"></div>
+        <p class="levelup-tip">点击卡片 / 按 1 2 3 键选择</p>
+      </div>
+    </div>
+
+    <div id="screen-paused" class="overlay" data-screen="paused">
+      <div class="panel">
+        <h2 class="modal-title">游戏暂停</h2>
+        <button class="btn" data-action="resume">继续游戏</button>
+        <button class="btn" data-action="home">返回主页</button>
+      </div>
+    </div>
+
+    <div id="screen-gameover" class="overlay" data-screen="gameover">
+      <div class="panel">
+        <h2 class="result-title" id="result-title">游戏结束</h2>
+        <p class="result-score" id="result-score">最终得分：0</p>
+        <button class="btn" data-action="restart">重新开始</button>
+        <button class="btn" data-action="home">返回主页</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
